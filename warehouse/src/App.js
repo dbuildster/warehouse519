@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import React, { useState, useEffect } from 'react';
+import { GoogleOAuthProvider} from '@react-oauth/google';
+import Google from './google';
 
 function App() {
   const [shipments, setShipments] = useState([]);
@@ -11,6 +13,16 @@ function App() {
     ShipmentID: '',
     BoxesRcvd: ''
   });
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const handleSignIn = () => {
+    console.log('Signed in successfully!');
+    setIsSignedIn(true);
+    console.log(isSignedIn);
+  };
+
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,6 +59,8 @@ function App() {
 
   return (
     <>
+    {isSignedIn ? (
+      <>
     <form onSubmit={handleSubmit}>
       <label>
         Date:
@@ -93,6 +107,12 @@ function App() {
       </tbody>
     </table>
   </>
+  ) : (
+    <GoogleOAuthProvider clientId="1033708814286-3og4qusmqh3mkgu3lbb0lp9hn3ojn9p4.apps.googleusercontent.com">
+      <Google onSignIn={handleSignIn} setIsSignedIn={setIsSignedIn} />
+    </GoogleOAuthProvider>
+  )}
+</>
   );
 }
 
