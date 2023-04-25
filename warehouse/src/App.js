@@ -15,6 +15,8 @@ function App() {
   });
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
+  const [file, setFile] = useState(null);
+  const [link, setLink] = useState('');
 
 
   const handleSignIn = () => {
@@ -25,7 +27,20 @@ function App() {
     
   };
 
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
 
+  const handleLinkChange = (event) => {
+    setLink(event.target.value);
+  };
+
+  const handleSubmit_file_link = (event) => {
+    event.preventDefault();
+    // You can do something with the file or link here, such as send it to a server
+    console.log(file);
+    console.log(link);
+  };
 
 
   const handleSubmit = (e) => {
@@ -66,6 +81,19 @@ function App() {
     {isSignedIn ? (
       <>
       {authenticated && <p>You are authenticated!</p>}
+
+      <form onSubmit={handleSubmit_file_link}>
+      <div>
+        <label htmlFor="file">Upload file:</label>
+        <input type="file" id="file" name="file" onChange={handleFileChange} />
+      </div>
+      <div>
+        <label htmlFor="link">Or enter a link:</label>
+        <input type="text" id="link" name="link" value={link} onChange={handleLinkChange} />
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+
     <form onSubmit={handleSubmit}>
       <label>
         Date:
