@@ -14,11 +14,15 @@ function App() {
     BoxesRcvd: ''
   });
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+
 
   const handleSignIn = () => {
     console.log('Signed in successfully!');
     setIsSignedIn(true);
     console.log(isSignedIn);
+    setAuthenticated(true);
+    
   };
 
 
@@ -61,6 +65,7 @@ function App() {
     <>
     {isSignedIn ? (
       <>
+      {authenticated && <p>You are authenticated!</p>}
     <form onSubmit={handleSubmit}>
       <label>
         Date:
@@ -108,9 +113,13 @@ function App() {
     </table>
   </>
   ) : (
+    <div>
     <GoogleOAuthProvider clientId="1033708814286-3og4qusmqh3mkgu3lbb0lp9hn3ojn9p4.apps.googleusercontent.com">
       <Google onSignIn={handleSignIn} setIsSignedIn={setIsSignedIn} />
+      {authenticated && <p>You are authenticated!</p>}
     </GoogleOAuthProvider>
+    
+    </div>
   )}
 </>
   );
