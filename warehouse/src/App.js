@@ -26,7 +26,7 @@ function App() {
     setAuthenticated(true);
     
   };
-
+ 
   const handleImageUpload = (event) => {
     setFile(event.target.files[0]);
   
