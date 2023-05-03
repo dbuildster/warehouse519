@@ -17,7 +17,7 @@ function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [file, setFile] = useState(null);
   const [link, setLink] = useState('');
-
+  const [text, setText] = useState("");
 
   const handleSignIn = () => {
     console.log('Signed in successfully!');
@@ -27,20 +27,59 @@ function App() {
     
   };
 
-  const handleFileChange = (event) => {
+  const handleImageUpload = (event) => {
     setFile(event.target.files[0]);
+  
+    const formData = new FormData();
+    formData.append('apikey', 'K82791252488957');
+    formData.append('file', event.target.files[0]);
+  
+    fetch('https://api.ocr.space/parse/image', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setText(data.ParsedResults[0].ParsedText);
+      })
+      .catch((error) => console.error(error));
   };
 
   const handleLinkChange = (event) => {
     setLink(event.target.value);
   };
 
-  const handleSubmit_file_link = (event) => {
-    event.preventDefault();
-    // You can do something with the file or link here, such as send it to a server
-    console.log(file);
-    console.log(link);
-  };
+const handleSubmit_file_link = (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(event.target);
+  const image = formData.get("image");
+
+  fetch("https://vision.googleapis.com/v1/images:annotate?key=YOUR_API_KEY", {
+    method: "POST",
+    body: JSON.stringify({
+      requests: [
+        {
+          image: {
+            content: btoa(image),
+          },
+          features: [
+            {
+              type: "TEXT_DETECTION",
+            },
+          ],
+        },
+      ],
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      setText(data.responses[0].fullTextAnnotation.text);
+    });
+};
 
 
   const handleSubmit = (e) => {
@@ -85,7 +124,8 @@ function App() {
       <form onSubmit={handleSubmit_file_link}>
       <div>
         <label htmlFor="file">Upload file:</label>
-        <input type="file" id="file" name="file" onChange={handleFileChange} />
+        <input type="file" id="file" name="file" onChange={handleImageUpload} />
+        <p>{text}</p>
       </div>
       <div>
         <label htmlFor="link">Or enter a link:</label>
